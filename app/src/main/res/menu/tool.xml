@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/categoryid"
+        android:icon="@drawable/category"
+        android:title="category"/>
+
+    <item
+        android:id="@+id/favid"
+        android:icon="@drawable/ic_baseline_favorite_24"
+        android:title="fav"/>
+
+    <item
+        android:id="@+id/settingid"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:title="setting"/>
+
+</menu>
