@@ -1,6 +1,8 @@
 package com.wallpy.fragmentdemo_1.ExDatabase;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -15,17 +17,25 @@ import java.io.OutputStream;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    Context mContext;
+    Context context;
     String dbname;
-    String dbpath;
+    private static String dbpath= " ";
 
+ //   static String DB_NAME="EngFont1.db";
+    //public static final String TABLE_NAME=" Life ";
+//        Table Colum
+    public static final String ID="_id";
+    public static final String NAME="NAME";
+    public static  final  String DESC="DECRIPTION";
 
-    public DatabaseHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
-        this.dbname=name;
-        this.mContext=context;
-        this.dbpath="/data/data"+"com.wallpy.fragmentdemo_1.ExDatabase"+"/databases/";
+    SQLiteDatabase database;
+    DatabaseHelper databaseHelper;
 
+    public DatabaseHelper(@Nullable Context mcontext, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
+        super(mcontext, name, factory, version);
+        this.context=mcontext;
+        dbname="EngFont1.db";
+        dbpath = "/data/data/" +"com.wallpy.fragmentdemo_1.ExDatabase" + "/databases/";
     }
 
     @Override
@@ -38,62 +48,79 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public void checkdb(){
+    public void CheckDatabase() {
 
-        SQLiteDatabase checkDb=null;
-
-        String filePath=dbpath+dbname;
+        this.getReadableDatabase();
 
         try{
-            checkDb=SQLiteDatabase.openDatabase(filePath,null,0);
+            String path=dbpath+dbname;
 
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+            SQLiteDatabase.openDatabase(path,null,0);
 
+        }catch (Exception e){ }
 
-        if(checkDb!=null){
-            Toast.makeText(mContext,"Database alredy exits",Toast.LENGTH_SHORT).show();
-        }
-        else{
-            CopyDatabase();
-        }
-
+        CopyDatabase();
 
     }
 
-    private void CopyDatabase() {
-        this.getReadableDatabase();
 
-
+    public void CopyDatabase(){
         try{
-            InputStream ios= mContext.getAssets().open(dbname);
-            OutputStream os= new FileOutputStream(dbpath+dbname);
+            InputStream io=context.getAssets().open(dbname);
+            String oufilename= dbpath + dbname;
+            OutputStream outputStream= new FileOutputStream(oufilename);
 
-            byte[] buffer=new byte[1024];
+            int lenth;
 
-            int len;
+            byte[] buffer =new byte[1024];
 
-            while ((len=ios.read(buffer))>0){
-                os.write(buffer,0,len);
+            while((lenth=io.read(buffer))>0){
+                outputStream.write(buffer,lenth,0);
             }
 
-            os.flush();
-            ios.close();
-            os.close();
+            io.close();
+            outputStream.flush();
+            outputStream.close();
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        }catch (Exception e){
+
         }
 
-        Log.d("copydb","Database copid");
     }
 
     public void OpenDatabase(){
-
-        String filepath=dbpath+dbname;
-
-        SQLiteDatabase.openDatabase(filepath,null,0);
-
+        String path=dbpath + dbname;
+        SQLiteDatabase.openDatabase(path,null,0);
     }
+
+
+
+
+
+//    public Cursor fetch1() {
+//        String[] columns = new String[]{ID,NAME,DESC};
+//
+//        Cursor cursor1 = database.rawQuery(TABLE_NAME,columns);
+////        query(TABLE_NAME,columns,
+////                null,null,null,null,null);
+//        if (cursor1 != null) {
+//            cursor1.moveToFirst();
+//        }
+//        return cursor1;
+//    }
+
+//    public DatabaseHelper open() throws SQLException {
+//        databaseHelper = new DatabaseHelper(mContext,"EngFont.db",null,1);
+//        return this;
+//    }
+
+    public DatabaseHelper open() throws SQLException{
+        databaseHelper=new DatabaseHelper(context,dbname,null,1);
+        database= databaseHelper.getReadableDatabase();
+        return this;
+    }
+    public void close(){
+        databaseHelper.close();
+    }
+
 }

@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void progressAnimation() {
         LodingAnimation animation=new LodingAnimation(this,progressBar,textView,0f,100f);
-        animation.setDuration(8000);
+        animation.setDuration(3000);
         progressBar.setAnimation(animation);
 
 
